@@ -11,7 +11,7 @@ using UnityEngine.UI;
 public class GameUIManager : MonoBehaviour
 {
 	public static GameUIManager instance;
-
+	public GameObject[] levelCompleteDeactivations;
 	public GameObject winPanel;
 	public GameObject pausePanel;
 	public GameObject losePanel;
@@ -22,6 +22,8 @@ public class GameUIManager : MonoBehaviour
 	public Image normalCrosshair;
 	public Image aimOnEnemyCrosshair;
 	public TMP_Text headShotText;
+	public TMP_Text levelNumberText;
+	private int currentLevel;
 
 	[HideInInspector] public int enemyBaseCount = 0;
 	[HideInInspector] public int enemyDeathCount;
@@ -29,7 +31,9 @@ public class GameUIManager : MonoBehaviour
 	private void Awake()
 	{
 		instance = this;
-
+		currentLevel = PlayerPrefs.GetInt("SelectedLevel") + 1;
+		levelNumberText.text = currentLevel.ToString();
+		Debug.LogError("CURRENT LEVEL IS " + currentLevel);
 
 		if (PlayerPrefs.GetInt("DoNotShowAds") != 1)
 		{
@@ -44,14 +48,43 @@ public class GameUIManager : MonoBehaviour
 		{
 			nextLevelButton.interactable = false;
 		}
+
+		if (!PlayerPrefs.HasKey("AutoShoot"))
+		{
+			PlayerPrefs.SetInt("AutoShoot",1);
+			AutoShoot.isOn = true;
+		}
 		CheckPlayerSettings();
-		headShotText.text = "Headshots: " + PlayerPrefs.GetInt("Headshots");
 	}
 
+	public void OnLevelComplete()
+	{
+		int j;
+		int deactivationsLength = levelCompleteDeactivations.Length;
+		for ( j = 0; j < deactivationsLength; j++)
+		{
+			levelCompleteDeactivations[j].gameObject.SetActive(false);
+		}
+	}
+	
+		
+	
+
+	
 	private void CheckPlayerSettings()
 	{
-		AutoShoot.isOn = PlayerPrefs.GetInt("AutoShoot")==1;
-		AutoAim.isOn = PlayerPrefs.GetInt("AutoAim")==1;
+	//	AutoShoot.isOn = PlayerPrefs.GetInt("AutoShoot")==1;
+	  //  AUTOSHOOT();
+		if (PlayerPrefs.GetInt("AutoShoot")==1)
+		{
+			AutoShoot.isOn = true;
+			
+		}
+		else
+		{
+			AutoShoot.isOn = false;
+		}
+//		AutoAim.isOn = PlayerPrefs.GetInt("AutoAim")==1;
 	}
 
 	public void UpdateEnemiesKilledText()

@@ -121,7 +121,7 @@ public class UnityAds : MonoBehaviour, IUnityAdsInitializationListener, IUnityAd
 					PlayerPrefs.SetInt("DoNotShowAds", 1); ///// Only for a single placement id, i.e do not show ads
 					PlayerPrefs.SetInt("Max", 9);
 					CustomWeaponSelector.instance.UnlockAllWeapons();
-				//	MainMenuManager.instance.LevelsLock_Unlock();
+					CustomWeaponSelector.instance.ReplaceAdIndicatorWithUnlocked();
 					MainMenuManager.instance.removeAllAdsButton.interactable = false;
 					MainMenuManager.instance.removeAllAdsButton.transform.gameObject.SetActive(false);
 					MainMenuManager.instance.EnableReference(0);

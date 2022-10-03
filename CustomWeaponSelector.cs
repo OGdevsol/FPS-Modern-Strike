@@ -12,6 +12,8 @@ public class CustomWeaponSelector : MonoBehaviour
 	public GameObject[] Weaponsreferences;
 	public WeaponsStatsScriptables currentWeapon;
 	[SerializeField] private GameObject[] weaponButtons;
+	[SerializeField] private GameObject[] adIndicator;
+	[SerializeField] private Sprite unlockedIndicator;
 	public GameObject playButton;
 	public GameObject buyButton;
 
@@ -24,6 +26,7 @@ public class CustomWeaponSelector : MonoBehaviour
 		currentWeapon = gunsScriptables[PlayerPrefs.GetInt("SelectedWeapon")];
 		CheckIfWeaponIsLocked();
 		WeaponButtonSelectedState();
+		ReplaceAdIndicatorWithUnlocked();
 	}
 
 	public void CheckIfWeaponIsLocked()
@@ -37,12 +40,27 @@ public class CustomWeaponSelector : MonoBehaviour
 		{
 			playButton.SetActive(true);
 			buyButton.SetActive(false);
+			adIndicator[PlayerPrefs.GetInt("SelectedWeapon")].gameObject.GetComponent<Image>().sprite =
+				unlockedIndicator;
+			//	weaponButtons[PlayerPrefs.GetInt("SelectedWeapon")].transform.GetChild(3).gameObject.GetComponent<Image>().sprite=unlockedIndicator;
 		}
 
 		else
 		{
 			playButton.SetActive(false);
 			buyButton.SetActive(true);
+		}
+	}
+
+	void TestFunc()
+	{
+		for (int i = 0; i < gunsScriptables.Length; i++)
+		{
+			if (PlayerPrefs.HasKey("WeaponUnlocked" + gunsScriptables[i].weaponIndex))
+			{
+				weaponButtons[PlayerPrefs.GetInt("SelectedWeapon")].transform.GetChild(3).gameObject
+					.GetComponent<Image>().sprite = unlockedIndicator;
+			}
 		}
 	}
 
@@ -84,7 +102,8 @@ public class CustomWeaponSelector : MonoBehaviour
 		{
 			weaponButtons[i].transform.GetChild(0).gameObject.SetActive(false);
 		}
-		weaponButtons[PlayerPrefs.GetInt("SelectedWeapon")].transform.GetChild(0).gameObject.SetActive(true);
+
+		weaponButtons[PlayerPrefs.GetInt("SelectedWeapon")].transform.GetChild(0).gameObject.SetActive(true); //Activate a BG image to indicate player selection of available weapons
 	}
 
 	public void UnlockAllWeapons()
@@ -93,7 +112,39 @@ public class CustomWeaponSelector : MonoBehaviour
 		{
 			gunsScriptables[i].adCount = 0;
 			gunsScriptables[i].isLocked = false;
-			PlayerPrefs.SetInt("WeaponUnlocked" + gunsScriptables[i].weaponIndex , 0);
+			PlayerPrefs.SetInt("WeaponUnlocked" + gunsScriptables[i].weaponIndex, 0); // Will unlock all weapons at once and set PlayerPrefs in accordance with their data in scriptables
 		}
+	}
+
+	public void ReplaceAdIndicatorWithUnlocked()
+	{
+		if (PlayerPrefs.GetInt("DoNotShowAds") == 1 )
+		{
+			int i;
+			int indicatorsLength = adIndicator.Length;
+			for (i = 0; i < indicatorsLength; i++)
+			{
+				adIndicator[i].gameObject.GetComponent<Image>().sprite = unlockedIndicator; // Will check if the weapon has been bought, it's ad indicator image will be replaced with another image, indicating
+                                                                                           // that it has been unlocked in the game
+			}
+		}
+
+		/*if (PlayerPrefs.HasKey("WeaponUnlocked" + currentWeapon.weaponIndex))
+		{
+			adIndicator[PlayerPrefs.GetInt("SelectedWeapon")].gameObject.GetComponent<Image>().sprite =
+				unlockedIndicator;
+		}*/
+		/*if (PlayerPrefs.HasKey("WeaponUnlocked" + currentWeapon.weaponIndex))
+		{
+			playButton.SetActive(true);
+			buyButton.SetActive(false);
+			//	weaponButtons[PlayerPrefs.GetInt("SelectedWeapon")].transform.GetChild(3).gameObject.GetComponent<Image>().sprite=unlockedIndicator;
+		}
+
+		else
+		{
+			playButton.SetActive(false);
+			buyButton.SetActive(true);
+		}*/
 	}
 }

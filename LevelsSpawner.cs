@@ -17,6 +17,7 @@ public class LevelsSpawner : MonoBehaviour
 	private int x;
 	public TMP_Text waveObjectiveGameObject;
 	private Transform enemyTarget;
+	private GameUIManager _gameUIManager;
 
 
 	private int
@@ -29,20 +30,19 @@ public class LevelsSpawner : MonoBehaviour
 	{
 		Debug.LogError("SelectedLevel " + "==" + PlayerPrefs.GetInt("SelectedLevel"));
 		instance = this;
-	//	SetPlayerPosition();
-		
-
+		//	SetPlayerPosition();
 	}
 
 	private void Start()
 	{
 		AddWavesToList();
-		
+
 		InitializeEnemies();
 		GameUIManager.instance.enemyDeathCount = level[PlayerPrefs.GetInt("SelectedLevel")].wavesInLevel[0].enemy
 			.Length;
 		GameUIManager.instance.UpdateEnemiesKilledText();
 		ActivateWeapon();
+		_gameUIManager = GameUIManager.instance;
 	}
 
 	void ActivateWeapon()
@@ -96,13 +96,14 @@ public class LevelsSpawner : MonoBehaviour
 		}
 	}
 
-
+	
 	private static int waveToBeRemovedIndex = 0;
 
 	public void
 		CheckEnemiesInActiveWave() // When there are zero enemies left in currently active wave, next enemy wave will be initialized (Also being used in health script of the AI in AI Kit in KillAI method. NOTE: Don't forget to remove the enemy gameobject from respective wave when it is killed 
 	{
-		if (level[PlayerPrefs.GetInt("SelectedLevel")].wavesInLevel[waveToBeRemovedIndex].enemiesGameObjectInWave.Count == 0)
+		if (level[PlayerPrefs.GetInt("SelectedLevel")].wavesInLevel[waveToBeRemovedIndex].enemiesGameObjectInWave
+			.Count == 0)
 		{
 			level[PlayerPrefs.GetInt("SelectedLevel")].wavesInLevel
 				.RemoveAt(waveToBeRemovedIndex); // Wave with zero enemies will be removed/deactivated to initialize next wave and the next wave will take its place at waveToBeRemovedIndex. The cycle will repeat when 0 enemies are left in new wave.
@@ -116,7 +117,9 @@ public class LevelsSpawner : MonoBehaviour
 		if (level[PlayerPrefs.GetInt("SelectedLevel")].wavesInLevel.Count == 0)
 		{
 			Debug.Log("LEVEL COMPLETED");
-			GameUIManager.instance.StartCoroutine("LevelCompleteRoutine");
+			_gameUIManager.OnLevelComplete();
+
+			_gameUIManager.StartCoroutine("LevelCompleteRoutine");
 		}
 	}
 
@@ -152,7 +155,7 @@ public class Wave
 	public string waveObjective;
 	public Enemy[] enemy;
 
-	 public List<Transform>
+	public List<Transform>
 		enemiesGameObjectInWave; // Each level's waves' enemies gameobjects will be placed in this list according to their waves placement. 
 }
 
@@ -162,7 +165,7 @@ public class Level
 	public Transform playerPosition;
 	public Wave[] waves; // Add Enemies Details in this array
 
-	 public List<Wave>
+	public List<Wave>
 		wavesInLevel; //Total waves in each level will be added to this list to add and maintain functionality control over each wave's properties
 }
 

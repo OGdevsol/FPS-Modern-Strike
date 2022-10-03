@@ -47,7 +47,6 @@ public class EnemyBaseScript : MonoBehaviour
 			gameObject.GetComponent<EnemyBaseScript>().m_animator.enabled = false;
 			gameObject.GetComponent<EnemyBaseScript>().m_isDead = true;
 			gameObject.GetComponent<EnemyBaseScript>().RagdollBodiesIsKinematic(false);
-			
 			gameObject.GetComponent<EnemyAnimation>().enabled = false;
 			gameObject.GetComponent<StateController>().enabled = false;
 			gameObject.GetComponent<EnemyHealth>().enabled = false;

@@ -19,6 +19,7 @@ public class MainMenuManager : MonoBehaviour
 	private void Awake()
 	{
 		instance = this;
+		ControlFreak2.CFCursor.lockState = CursorLockMode.None;
 
 		if (PlayerPrefs.GetInt("DoNotShowAds") != 1)
 		{
@@ -114,7 +115,8 @@ public class MainMenuManager : MonoBehaviour
 
 	private IEnumerator Loading()
 	{
-		LoadingPanel.SetActive(true);
+		//LoadingPanel.SetActive(true);
+		EnableReference(6);
 		yield return new WaitForSecondsRealtime(3f);
 		Advertisement.Banner.Hide();
 		SceneManager.LoadScene("Gameplay");
@@ -130,5 +132,10 @@ public class MainMenuManager : MonoBehaviour
 
 			Debug.Log("UnlockingTill " + i);
 		}
+	}
+
+	public void QUIT()
+	{
+		Application.Quit();
 	}
 }
